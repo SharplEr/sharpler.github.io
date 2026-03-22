@@ -2,8 +2,10 @@
 layout: default
 ---
 
+{% if page.url != "/" and page.name != "README.md" %}
 <p style="margin-top: 0;">
   <a href="{{ '/' | relative_url }}">&#8592; На главную</a>
 </p>
+{% endif %}
 
 {{ content }}
