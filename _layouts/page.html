@@ -12,4 +12,110 @@ layout: default
 <h1 style="text-align: center;">{{ page.title }}</h1>
 {% endif %}
 
+<style>
+  .page-content img {
+    cursor: zoom-in;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .page-content img:hover {
+    transform: translateY(-1px);
+  }
+
+  .image-lightbox {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 1000;
+    cursor: zoom-out;
+  }
+
+  .image-lightbox.is-open {
+    display: flex;
+  }
+
+  .image-lightbox__frame {
+    margin: 0;
+    max-width: min(96vw, 1400px);
+    max-height: 96vh;
+    text-align: center;
+  }
+
+  .image-lightbox__image {
+    display: block;
+    max-width: 100%;
+    max-height: calc(96vh - 56px);
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  }
+
+  .image-lightbox__caption {
+    margin-top: 12px;
+    color: #d7d7d7;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+</style>
+
+<div class="page-content">
 {{ content }}
+</div>
+
+<div class="image-lightbox" id="image-lightbox" aria-hidden="true">
+  <figure class="image-lightbox__frame">
+    <img class="image-lightbox__image" alt="">
+    <figcaption class="image-lightbox__caption"></figcaption>
+  </figure>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('.page-content');
+    var lightbox = document.getElementById('image-lightbox');
+
+    if (!root || !lightbox) {
+      return;
+    }
+
+    var lightboxImage = lightbox.querySelector('.image-lightbox__image');
+    var lightboxCaption = lightbox.querySelector('.image-lightbox__caption');
+    var images = root.querySelectorAll('img');
+
+    function closeLightbox() {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      lightboxImage.removeAttribute('src');
+      lightboxCaption.textContent = '';
+    }
+
+    images.forEach(function (image) {
+      image.addEventListener('click', function () {
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt || '';
+        lightboxCaption.textContent = image.alt || '';
+        lightbox.classList.add('is-open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox || event.target === lightboxImage) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+        closeLightbox();
+      }
+    });
+  }());
+</script>
