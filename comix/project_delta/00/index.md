@@ -134,6 +134,30 @@ title: Project Delta
     var viewer = document.getElementById('comic-viewer');
     var currentIndex = 0;
 
+    function readIndexFromHash() {
+      var match = window.location.hash.match(/^#page=(\d+)$/);
+
+      if (!match) {
+        return 0;
+      }
+
+      var pageNumber = Number(match[1]);
+
+      if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > pages.length) {
+        return 0;
+      }
+
+      return pageNumber - 1;
+    }
+
+    function writeHash() {
+      var targetHash = '#page=' + (currentIndex + 1);
+
+      if (window.location.hash !== targetHash) {
+        window.history.replaceState(null, '', targetHash);
+      }
+    }
+
     function render() {
       image.src = pages[currentIndex];
       image.alt = 'Project Delta, страница ' + (currentIndex + 1);
@@ -141,6 +165,7 @@ title: Project Delta
       status.textContent = (currentIndex + 1) + ' / ' + pages.length;
       prevButton.disabled = currentIndex === 0;
       nextButton.disabled = currentIndex === pages.length - 1;
+      writeHash();
     }
 
     function updateFullscreenButton() {
@@ -200,8 +225,14 @@ title: Project Delta
       }
     });
 
+    window.addEventListener('hashchange', function () {
+      currentIndex = readIndexFromHash();
+      render();
+    });
+
     document.addEventListener('fullscreenchange', updateFullscreenButton);
 
+    currentIndex = readIndexFromHash();
     render();
     updateFullscreenButton();
   }());
