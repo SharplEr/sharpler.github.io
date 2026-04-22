@@ -37,6 +37,10 @@ layout: default
 
 1. [Черепа](drawings/skulls/)
 
+## Комиксы
+
+1. [Project Delta](comix/project_delta/00/)
+
 ## Стихи
 
 1. [Песня призывающего](poetry/00/)
