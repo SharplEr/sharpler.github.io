@@ -91,6 +91,7 @@ title: Project Delta
     <button class="comic-viewer__button" id="comic-prev" type="button">← Назад</button>
     <select class="comic-viewer__select" id="comic-select" aria-label="Выбор страницы"></select>
     <button class="comic-viewer__button" id="comic-next" type="button">Вперёд →</button>
+    <button class="comic-viewer__button" id="comic-fullscreen" type="button">На весь экран</button>
     <div class="comic-viewer__status" id="comic-status">1 / 18</div>
   </div>
 
@@ -127,8 +128,10 @@ title: Project Delta
     var image = document.getElementById('comic-image');
     var prevButton = document.getElementById('comic-prev');
     var nextButton = document.getElementById('comic-next');
+    var fullscreenButton = document.getElementById('comic-fullscreen');
     var select = document.getElementById('comic-select');
     var status = document.getElementById('comic-status');
+    var viewer = document.getElementById('comic-viewer');
     var currentIndex = 0;
 
     function render() {
@@ -138,6 +141,14 @@ title: Project Delta
       status.textContent = (currentIndex + 1) + ' / ' + pages.length;
       prevButton.disabled = currentIndex === 0;
       nextButton.disabled = currentIndex === pages.length - 1;
+    }
+
+    function updateFullscreenButton() {
+      if (document.fullscreenElement === viewer) {
+        fullscreenButton.textContent = 'Выйти из полного экрана';
+      } else {
+        fullscreenButton.textContent = 'На весь экран';
+      }
     }
 
     pages.forEach(function (page, index) {
@@ -166,6 +177,17 @@ title: Project Delta
       render();
     });
 
+    fullscreenButton.addEventListener('click', function () {
+      if (!document.fullscreenElement) {
+        viewer.requestFullscreen();
+        return;
+      }
+
+      if (document.fullscreenElement === viewer) {
+        document.exitFullscreen();
+      }
+    });
+
     document.addEventListener('keydown', function (event) {
       if (event.key === 'ArrowLeft' && currentIndex > 0) {
         currentIndex -= 1;
@@ -178,6 +200,9 @@ title: Project Delta
       }
     });
 
+    document.addEventListener('fullscreenchange', updateFullscreenButton);
+
     render();
+    updateFullscreenButton();
   }());
 </script>
