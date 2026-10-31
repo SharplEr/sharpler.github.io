@@ -35,7 +35,8 @@ layout: default
 
 ## Рисунки
 
-1. [Черепа](drawings/skulls/)
+1. [Головы](drawings/heads/)
+2. [Черепа](drawings/skulls/)
 
 ## Комиксы
 
